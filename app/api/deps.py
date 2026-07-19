@@ -1,21 +1,23 @@
 # app/api/deps.py
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.core.security import decode_access_token
 from app.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+# 改用 HTTPBearer，Swagger 会直接显示一个输入框
+security = HTTPBearer()
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ) -> User:
     """
     解析 JWT，返回当前用户对象。
     如果 token 无效或用户不存在，抛出 401。
     """
+    token = credentials.credentials  # 自动提取 Bearer 后面的 token
     payload = decode_access_token(token)
     if payload is None:
         raise HTTPException(
