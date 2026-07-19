@@ -61,7 +61,7 @@ TaskFlow
 
 ---
 
-## 🗄 Database Design
+## Database Design
 
 Current Version：
 
