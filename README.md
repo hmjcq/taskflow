@@ -1,96 +1,269 @@
-# TaskFlow
+# 🚀 TaskFlow
 
-> 个人任务管理 API，基于 FastAPI + MySQL，支持 JWT 认证、任务增删改查、搜索、分页与排序。
+> A modern enterprise-grade task management backend built with **FastAPI**, **SQLAlchemy**, **MySQL**, and **JWT Authentication**.
 
-![TaskFlow Banner](docs/banner.png)
+TaskFlow 是一个基于 FastAPI 开发的企业级任务管理系统，采用经典分层架构设计，实现了完整的用户认证、任务管理、权限控制及 RESTful API，为 Python 后端开发实践提供了完整示例。
 
-## 功能演示
+---
 
-| 用户注册与登录 | 任务 CRUD | 搜索与过滤 |
-|:---:|:---:|:---:|
-| ![注册](docs/screenshots/register.png) | ![任务列表](docs/screenshots/tasks.png) | ![搜索](docs/screenshots/search.png) |
+## ✨ Features
 
-## 技术栈
+- 🔐 JWT 用户认证与权限控制
+- 👤 用户注册、登录、身份验证
+- 📋 Task 任务 CRUD
+- 🔍 任务搜索、过滤、分页、排序
+- 🗄 SQLAlchemy ORM 数据持久化
+- 🔄 Alembic 数据库迁移
+- 🧪 Pytest 自动化测试
+- 📖 Swagger(OpenAPI) 在线接口文档
+- ⚙️ 分层架构，便于维护与扩展
 
-- **后端框架**: FastAPI (Python 3.11+)
-- **数据库**: MySQL 8.0
-- **ORM**: SQLAlchemy 2.0
-- **认证**: JWT (python-jose) + bcrypt
-- **文档**: 自动生成 Swagger UI (OpenAPI)
-- **代码质量**: Black, isort
+---
 
-## 项目架构
-TaskFlow/
-├── app/
-│ ├── api/ # 路由层 (v1)
-│ ├── core/ # 配置、JWT
-│ ├── crud/ # 数据库操作
-│ ├── models/ # SQLAlchemy 模型
-│ ├── schemas/ # Pydantic 校验
-│ ├── services/ # 业务逻辑
-│ ├── database/ # 数据库连接
-│ └── utils/ # 工具 (密码哈希)
-├── tests/ # 单元测试 & 集成测试
-├── .env.example # 环境变量模板
+## 🖼 Project Preview
+
+> 建议将下面图片替换为真实项目截图。
+
+### Swagger API
+
+![Swagger](docs/screenshots/swagger.png)
+
+### User Login
+
+![Login](docs/screenshots/login.png)
+
+### Task API
+
+![Task](docs/screenshots/tasks.png)
+
+### Automated Testing
+
+![Pytest](docs/screenshots/pytest.png)
+
+---
+
+## 🏗 Tech Stack
+
+| Category | Technology |
+|------------|------------|
+| Language | Python 3.11+ |
+| Framework | FastAPI |
+| ORM | SQLAlchemy 2.x |
+| Database | MySQL 8 |
+| Authentication | JWT (python-jose) |
+| Password Encryption | bcrypt |
+| Migration | Alembic |
+| Validation | Pydantic |
+| Testing | Pytest |
+| Documentation | Swagger / OpenAPI |
+
+---
+
+## 📁 Project Structure
+
+```text
+TaskFlow
+│
+├── app
+│   ├── api              # RESTful API
+│   ├── core             # Config / JWT / Settings
+│   ├── crud             # Database Operations
+│   ├── database         # Database Session
+│   ├── models           # SQLAlchemy Models
+│   ├── schemas          # Pydantic Schemas
+│   ├── services         # Business Logic
+│   ├── utils            # Utility Functions
+│   └── main.py
+│
+├── alembic              # Database Migration
+├── tests                # Unit Tests
+├── docs                 # Project Images
 ├── requirements.txt
 └── README.md
+```
 
+---
 
-## 接口文档
+## 🗄 Database Design
 
-启动项目后访问 `http://127.0.0.1:8000/docs` 查看完整的 Swagger API 文档。
+Current Version：
 
-主要端点：
-- `POST /api/v1/auth/register`  注册
-- `POST /api/v1/auth/login`     登录
-- `GET /api/v1/users/me`        当前用户信息
-- `GET /api/v1/tasks`           任务列表（分页、搜索、排序、过滤）
-- `POST /api/v1/tasks`          创建任务
-- `GET /api/v1/tasks/{id}`      获取任务详情
-- `PUT /api/v1/tasks/{id}`      更新任务
-- `DELETE /api/v1/tasks/{id}`   删除任务
+- User
+- Task
+- Category
 
-## 快速启动
+Relationship：
 
-### 1. 克隆仓库
+```text
+User
+ └──────< Task >────── Category
+```
+
+---
+
+## 📖 REST API
+
+启动后访问：
+
+```
+http://127.0.0.1:8000/docs
+```
+
+即可查看完整 Swagger 文档。
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /api/v1/auth/register | Register |
+| POST | /api/v1/auth/login | Login |
+| GET | /api/v1/users/me | Current User |
+
+### Task
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| GET | /api/v1/tasks | Get Tasks |
+| POST | /api/v1/tasks | Create Task |
+| GET | /api/v1/tasks/{id} | Get Task |
+| PUT | /api/v1/tasks/{id} | Update Task |
+| DELETE | /api/v1/tasks/{id} | Delete Task |
+
+Supports：
+
+- Pagination
+- Search
+- Filter
+- Sorting
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone Repository
+
 ```bash
 git clone https://github.com/hmjcq/taskflow.git
 cd taskflow
-
-2. 安装依赖
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-
-3. 配置环境变量
-复制 .env.example 为 .env，修改数据库连接和 JWT 密钥：
-DATABASE_URL=mysql+pymysql://root:yourpassword@localhost:3306/taskflow
-SECRET_KEY=your-secret-key-here
-
-4. 创建数据库
-在 MySQL 中执行：
-CREATE DATABASE taskflow CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-5. 启动服务
-uvicorn app.main:app --reload
-打开浏览器访问 http://127.0.0.1:8000/docs 即可测试 API。
-
-运行测试
-# 确保测试数据库已创建（taskflow_test）
-pytest
-
-未来规划
-标签、附件、评论功能
-
-前端界面 (Vue/React)
-
-团队协作与任务分配
-
-定时提醒与通知
-
-Docker 部署支持
-
-License
-本项目采用 MIT License
+```
 
 ---
+
+### 2. Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+Windows：
+
+```bash
+.venv\Scripts\activate
+```
+
+Linux / macOS：
+
+```bash
+source .venv/bin/activate
+```
+
+---
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 4. Configure Environment Variables
+
+Create a `.env` file.
+
+```env
+DATABASE_URL=mysql+pymysql://root:password@localhost:3306/taskflow
+
+SECRET_KEY=your-secret-key
+```
+
+---
+
+### 5. Create Database
+
+```sql
+CREATE DATABASE taskflow
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+```
+
+---
+
+### 6. Run Server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Open：
+
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 🧪 Testing
+
+Run：
+
+```bash
+pytest
+```
+
+Example：
+
+```text
+=============================
+17 passed
+=============================
+```
+
+---
+
+## 📌 Roadmap
+
+- [ ] Docker Deployment
+- [ ] Redis Cache
+- [ ] GitHub Actions CI
+- [ ] Email Notification
+- [ ] File Upload
+- [ ] Team Collaboration
+- [ ] Vue / React Frontend
+
+---
+
+## 💡 Project Highlights
+
+- Enterprise layered architecture
+- RESTful API design
+- JWT authentication
+- Password hashing with bcrypt
+- SQLAlchemy ORM
+- Alembic migration
+- Automated testing
+- OpenAPI documentation
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+**清夕雨**
+
+- GitHub：https://github.com/hmjcq
